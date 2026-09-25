@@ -43,8 +43,8 @@ services:
     container_name: rustfs
     restart: unless-stopped
     ports:
-      - "9002:9000"
-      - "9003:9001"
+      - "9000:9000"
+      - "9001:9001"
     environment:
         RUSTFS_ACCESS_KEY: rustfsadmin
         RUSTFS_SECRET_KEY: rustfsadmin
