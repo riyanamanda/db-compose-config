@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: postgres:17
     container_name: postgres_db
     restart: unless-stopped
     environment:
@@ -8,20 +8,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
-    networks:
-      - database_network
-
-  mysql:
-    image: mysql:8.4
-    container_name: mysql_db
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - database_network
 
@@ -51,25 +38,26 @@ services:
     networks:
       - database_network
 
-  minio:
-    image: minio/minio
-    container_name: minio
+  rustfs:
+    image: rustfs/rustfs:1.0.0-glibc
+    container_name: rustfs
     restart: unless-stopped
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9002:9000"
+      - "9003:9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+        RUSTFS_ACCESS_KEY: rustfsadmin
+        RUSTFS_SECRET_KEY: rustfsadmin
     volumes:
-      - ./minio_data:/data
+        - ./rustfs_data:/data
     command: server /data --console-address ":9001"
     networks:
-      - database_network
+        - database_network
 
 volumes:
-    rabbitmq_data:
-    redis_data:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
 
 networks:
   database_network:
